@@ -11,13 +11,13 @@ const app: Application = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use((req: Request, res: Response, next: NextFunction) => {
-    console.log(req.method + "------->" + req.url);
-    next();
+  console.log(req.method + "------->" + req.url);
+  next();
 });
 
 //Router
 app.use("/api", router);
 
 app.listen(process.env.PORT, () => {
-    console.log("Listening in PORT: " + process.env.PORT);
+  console.log("Listening in PORT: " + process.env.PORT);
 });

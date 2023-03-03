@@ -1,15 +1,15 @@
 import { Router } from "express";
 const {
-    createNewRegistration,
-    getAllOwners,
-    getAllRegistrationDetails,
-    getAllStickers,
-    getAllVehicles,
-    getAllPlates,
-    getOwner,
-    deleteRegistration,
-    deleteManyEmployees,
-    updateEmployee,
+  createNewRegistration,
+  getAllOwners,
+  getAllRegistrationDetails,
+  getAllStickers,
+  getAllVehicles,
+  getAllPlates,
+  getOwner,
+  deleteRegistration,
+  deleteManyEmployees,
+  updateEmployee,
 } = require("../controllers/registrationController");
 const db = require("../middleware/databaseConnection");
 
