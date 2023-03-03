@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .stroke {
+    @apply after:content-[''] after:block after:w-36 after:h-1 after:bg-primary after:absolute after:-translate-y-5;
+  }
+  .input_design {
+    @apply px-2.5 py-2.5 w-full text-sm text-gray-900 rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600;
+  }
+  .nav {
+    @apply flex flex-row items-center h-12 px-4 rounded-lg text-gray-600 hover:bg-blue-100;
+  }
+}
