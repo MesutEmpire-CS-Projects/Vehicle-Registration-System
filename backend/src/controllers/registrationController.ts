@@ -6,7 +6,7 @@ import { PoolConnection, PromisePoolConnection } from "mysql2/promise";
 const pool = require("../middleware/databaseConnection");
 
 //Perform CRUD
-//Add new Employee
+//Add new Registration
 const createNewRegistration = (req: Request, res: Response) => {
   const [
     {
@@ -22,7 +22,6 @@ const createNewRegistration = (req: Request, res: Response) => {
       weight,
       mileage,
       registration_fee,
-      duration,
       sticker_type,
       plate_issuer,
       plate_type,
@@ -36,10 +35,8 @@ const createNewRegistration = (req: Request, res: Response) => {
   };
 
   pool.getConnection((error: ErrnoException, db: any) => {
-    console.log("Created Connection");
     try {
       //INSERT OWNER
-      console.log("Start Owner");
       db.promise()
         .query({
           sql: "INSERT INTO owner(owner_name,phone_number,address) VALUES(?,?,?)",
@@ -50,7 +47,6 @@ const createNewRegistration = (req: Request, res: Response) => {
           for (const txt in result) {
             console.log(`txt ---> ${txt} ====>>> ${result[txt]}`);
           }
-          console.log(`Added Owner ===> ${details.owner_id}`);
           //INSERT PLATE
           db.promise()
             .query({
@@ -59,7 +55,6 @@ const createNewRegistration = (req: Request, res: Response) => {
             })
             .then((result: any) => {
               details.plate_number = result[0].insertId;
-              console.log(`Added Plate  ===> ${details.plate_number}`);
               //INSERT STICKER
               db.promise()
                 .query({
@@ -68,7 +63,6 @@ const createNewRegistration = (req: Request, res: Response) => {
                 })
                 .then((result: any) => {
                   details.sticker_number = result[0].insertId;
-                  console.log(`Added Sticker ===> ${details.sticker_number}`);
                   //INSERT VEHICLE
                   db.promise()
                     .query({
@@ -86,7 +80,7 @@ const createNewRegistration = (req: Request, res: Response) => {
                       ],
                     })
                     .then((result: any) => {
-                      console.log("Added Vehicle");
+                      const duration = registration_fee / 5000;
                       //INSERT REG
                       db.promise()
                         .query({
@@ -99,54 +93,38 @@ const createNewRegistration = (req: Request, res: Response) => {
                           ],
                         })
                         .then((result: any) => {
-                          console.log("Added Reg");
                           db.commit();
                           res
                             .status(200)
                             .json({ message: "Registration successful" });
                         })
                         .catch((error: any) => {
-                          console.log(error);
                           db.rollback();
-                          res
-                            .status(500)
-                            .json({
-                              message:
-                                "Error registering INTO Registrsion details",
-                            });
+                          res.status(500).json(error.sqlMessage);
                         });
                     })
                     .catch((error: any) => {
-                      console.log(error);
                       db.rollback();
-                      res
-                        .status(500)
-                        .json({ message: "Error registering vehicle" });
+                      res.status(500).json(error.sqlMessage);
                     });
                 })
                 .catch((error: any) => {
-                  console.log(error);
                   db.rollback();
-                  res
-                    .status(500)
-                    .json({ message: "Error registering sticker" });
+                  res.status(500).json(error.sqlMessage);
                 });
             })
             .catch((error: any) => {
-              console.log(error);
               db.rollback();
-              res.status(500).json({ message: "Error registering plate" });
+              res.status(500).json(error.sqlMessage);
             });
         })
         .catch((error: any) => {
-          console.log(error);
           db.rollback();
-          res.status(500).json({ message: "Error registering owner" });
+          res.status(500).json(error.sqlMessage);
         });
     } catch (error: any) {
-      console.log(error);
       db.rollback();
-      res.status(500).json({ message: "Error registering vehicle" });
+      res.status(500).json(error.sqlMessage);
     } finally {
       db.release();
     }
@@ -161,12 +139,15 @@ const getOwner = (req: Request, res: Response) => {
       values: [`%${name}%`, `%${name}%`],
     },
     (error: QueryError, results: RowDataPacket) => {
-      if (error) throw error;
+      if (error) {
+        res.status(400).json(error);
+        throw error;
+      }
       res.json(results);
     }
   );
 };
-//Delete an Employees
+//Delete an Registration
 const deleteRegistration = (req: Request, res: Response) => {
   const {
     owner_id,
@@ -178,7 +159,7 @@ const deleteRegistration = (req: Request, res: Response) => {
   pool.getConnection((error: ErrnoException, db: any) => {
     console.log("Created Connection");
     try {
-      //INSERT OWNER
+      //DELETE OWNER
       console.log("Start Owner");
       db.promise()
         .query({
@@ -187,7 +168,7 @@ const deleteRegistration = (req: Request, res: Response) => {
         })
         .then(() => {
           console.log("Deleted Owner");
-          //INSERT PLATE
+          //DELETE PLATE
           db.promise()
             .query({
               sql: "DELETE FROM plate WHERE plate_number = ?",
@@ -195,7 +176,7 @@ const deleteRegistration = (req: Request, res: Response) => {
             })
             .then(() => {
               console.log("Deleted Plate");
-              //INSERT STICKER
+              //DELETE STICKER
               db.promise()
                 .query({
                   sql: "DELETE FROM sticker WHERE sticker_number = ?",
@@ -203,7 +184,7 @@ const deleteRegistration = (req: Request, res: Response) => {
                 })
                 .then(() => {
                   console.log("Deleted Sticker");
-                  //INSERT VEHICLE
+                  //DELETE VEHICLE
                   db.promise()
                     .query({
                       sql: "DELETE FROM vehicle WHERE vehicle_number = ?",
@@ -211,7 +192,7 @@ const deleteRegistration = (req: Request, res: Response) => {
                     })
                     .then(() => {
                       console.log("Deleted Vehicle");
-                      //INSERT REG
+                      //DELETE REG
                       db.promise()
                         .query({
                           sql: "DELETE FROM registration_detail WHERE registration_id = ?",
@@ -227,120 +208,40 @@ const deleteRegistration = (req: Request, res: Response) => {
                         .catch((error: any) => {
                           console.log(error);
                           db.rollback();
-                          res
-                            .status(500)
-                            .json({
-                              message:
-                                "Error registering INTO Registrsion details",
-                            });
+                          res.status(500).json(error.sqlMessage);
                         });
                     })
                     .catch((error: any) => {
                       console.log(error);
                       db.rollback();
-                      res
-                        .status(500)
-                        .json({ message: "Error registering vehicle" });
+                      res.status(500).json(error.sqlMessage);
                     });
                 })
                 .catch((error: any) => {
                   console.log(error);
                   db.rollback();
-                  res
-                    .status(500)
-                    .json({ message: "Error registering sticker" });
+                  res.status(500).json(error.sqlMessage);
                 });
             })
             .catch((error: any) => {
               console.log(error);
               db.rollback();
-              res.status(500).json({ message: "Error registering plate" });
+              res.status(500).json(error.sqlMessage);
             });
         })
         .catch((error: any) => {
           console.log(error);
           db.rollback();
-          res.status(500).json({ message: "Error registering owner" });
+          res.status(500).json(error.sqlMessage);
         });
     } catch (error: any) {
       console.log(error);
       db.rollback();
-      res.status(500).json({ message: "Error registering vehicle" });
+      res.status(500).json(error.sqlMessage);
     } finally {
       db.release();
     }
   });
-  // pool.query(
-  //     {
-  //         sql: "DELETE FROM employee WHERE employee_id = ?",
-  //         values: [employee_id],
-  //     },
-  //     (error: QueryError, results: RowDataPacket) => {
-  //         if (error) throw error;
-  //         console.log(results);
-  //         res.json(results);
-  //         if (results.affectedRows > 0) {
-  //             console.log(`Deleted user with id: ${employee_id}`);
-  //         } else {
-  //             console.log(`No user found with id: ${employee_id}`);
-  //         }
-  //     }
-  // );
-};
-//Delete many Employees
-const deleteManyEmployees = (req: Request, res: Response) => {
-  console.log("hello2");
-  const employee_ids_double: any = req.query.ids;
-  const employee_ids = employee_ids_double
-    .split(",")
-    .map((id: any) => parseInt(id));
-  console.log(employee_ids);
-  pool.query(
-    {
-      sql: "DELETE FROM employee WHERE employee_id IN (?)",
-      values: [employee_ids],
-    },
-    (error: QueryError, results: RowDataPacket) => {
-      if (error) throw error;
-      if (results.affectedRows > 0) {
-        console.log(`Deleted users with ids: ${employee_ids}`);
-        res
-          .status(200)
-          .json({ message: `Deleted users with ids: ${employee_ids}` });
-      } else {
-        console.log(`No users found with ids: ${employee_ids}`);
-        res
-          .status(404)
-          .json({ message: `No users found with ids: ${employee_ids}` });
-      }
-    }
-  );
-};
-
-//Update Employee
-const updateEmployee = (req: Request, res: Response) => {
-  const employee_id = req.params.employee_id;
-  const { first_name, salary } = req.body;
-  pool.query(
-    {
-      sql: "UPDATE employee SET first_name = ?, salary = ? WHERE employee_id = ?",
-      values: [first_name, salary, employee_id],
-    },
-    (error: QueryError, results: RowDataPacket) => {
-      if (error) throw error;
-      if (results.affectedRows > 0) {
-        console.log(`Update employee with id: ${employee_id}`);
-        res
-          .status(200)
-          .json({ message: `Update employee with id: ${employee_id}` });
-      } else {
-        console.log(`No employee found with id: ${employee_id}`);
-        res
-          .status(404)
-          .json({ message: `No employee found with id: ${employee_id}` });
-      }
-    }
-  );
 };
 
 //GET all Employees
@@ -348,7 +249,7 @@ const getAllOwners = (req: Request, res: Response) => {
   pool.query(
     "SELECT * FROM owner",
     (error: QueryError, results: RowDataPacket) => {
-      if (error) throw error;
+      if (error) res.status(500).json(error);
       res.json(results);
     }
   );
@@ -357,7 +258,7 @@ const getAllRegistrationDetails = (req: Request, res: Response) => {
   pool.query(
     "SELECT * FROM registration_detail",
     (error: QueryError, results: RowDataPacket) => {
-      if (error) throw error;
+      if (error) res.status(500).json(error);
       res.json(results);
     }
   );
@@ -366,7 +267,7 @@ const getAllStickers = (req: Request, res: Response) => {
   pool.query(
     "SELECT * FROM sticker",
     (error: QueryError, results: RowDataPacket) => {
-      if (error) throw error;
+      if (error) res.status(500).json(error);
       res.json(results);
     }
   );
@@ -375,7 +276,7 @@ const getAllVehicles = (req: Request, res: Response) => {
   pool.query(
     "SELECT * FROM vehicle",
     (error: QueryError, results: RowDataPacket) => {
-      if (error) throw error;
+      if (error) res.status(500).json(error);
       res.json(results);
     }
   );
@@ -384,11 +285,17 @@ const getAllPlates = (req: Request, res: Response) => {
   pool.query(
     "SELECT * FROM plate",
     (error: QueryError, results: RowDataPacket) => {
-      if (error) throw error;
+      if (error) res.status(500).json(error);
       res.json(results);
     }
   );
 };
+
+//Delete Many Registrations
+const deleteManyReg = (req: Request, res: Response) => {};
+
+//Update Registrations
+const updateReg = (req: Request, res: Response) => {};
 
 module.exports = {
   createNewRegistration,
@@ -399,6 +306,6 @@ module.exports = {
   getAllPlates,
   getOwner,
   deleteRegistration,
-  deleteManyEmployees,
-  updateEmployee,
+  deleteManyReg,
+  updateReg,
 };

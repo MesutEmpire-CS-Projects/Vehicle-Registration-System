@@ -1,9 +1,3 @@
-import RegistrationForm from "../components/Registration_Form";
-import Owner from "../components/Owner";
-import Plate from "../components/Plate";
-import RegistrationDetails from "../components/Registration_details";
-import Sticker from "../components/Sticker";
-import Vehicle from "../components/Vehicle";
 import { Link, Outlet } from "react-router-dom";
 
 const HomeLayout = () => {

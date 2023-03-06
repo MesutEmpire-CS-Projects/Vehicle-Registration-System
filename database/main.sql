@@ -4,7 +4,7 @@ USE registration_system;
 CREATE TABLE owner (
       owner_id INT PRIMARY KEY AUTO_INCREMENT,
       owner_name VARCHAR(20) UNIQUE,
-      phone_number INT,
+      phone_number BIGINT,
       address VARCHAR(20)
 );
 CREATE TABLE sticker(

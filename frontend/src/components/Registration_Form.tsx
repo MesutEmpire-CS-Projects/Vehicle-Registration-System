@@ -1,8 +1,15 @@
 import { FormEvent, useEffect, useState } from "react";
+import { IRegistration_Form } from "../intetfaces/Interfaces";
+import { redirect } from "react-router-dom";
+import ErrorPage from "./Error";
 
 const RegistrationForm = () => {
-  const [inputs, setInputs] = useState({});
-  const [data, setData] = useState([]);
+  const [inputs, setInputs] = useState<IRegistration_Form>();
+  const [error, setError] = useState();
+
+  // useEffect(() => {
+  //   console.log(error)
+  // },[error])
 
   const postData = (event: FormEvent) => {
     preventDefault(event);
@@ -13,13 +20,25 @@ const RegistrationForm = () => {
       },
       body: JSON.stringify([inputs]),
     })
-      .then((res: Response) => res.json())
-      .then((data: any) => console.log(data));
+      .then(async (res: Response) => {
+        if (res.status !== 200) {
+          const data = await res.json();
+          throw new Error(data);
+        }
+        res.json();
+      })
+      .then((data: any) => {
+        redirect("/vehicles");
+      })
+      .catch((error: any) => {
+        setError(error.message);
+      });
   };
   const preventDefault = (event: FormEvent) => event.preventDefault();
   return (
-    <div className="max-w-3xl">
-      <form onSubmit={(e) => postData(e)}>
+    <div className="max-w-xl">
+      <h3 className="text-3xl font-medium m-1">Registration Form</h3>
+      <form onSubmit={(e: FormEvent) => postData(e)}>
         <div className="flex flex-col gap-y-8 rounded-lg border border-gray-300 p-5">
           <div>
             <h3>Owner</h3>
@@ -34,12 +53,13 @@ const RegistrationForm = () => {
                   required
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
                   className="input_design"
                 />
+                {/* ! operator tells TypeScript that values is not undefined, so it won't raise an error when you try to access its properties*/}
               </div>
               <div>
                 <label htmlFor="last_name" className="block">
@@ -51,7 +71,7 @@ const RegistrationForm = () => {
                   required
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
@@ -68,10 +88,9 @@ const RegistrationForm = () => {
                   type="tel"
                   name="phone_number"
                   required
-                  pattern="\+254\d{9}"
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
@@ -88,7 +107,7 @@ const RegistrationForm = () => {
                   required
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
@@ -110,7 +129,7 @@ const RegistrationForm = () => {
                   required
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
@@ -123,11 +142,11 @@ const RegistrationForm = () => {
                 </label>
                 <input
                   type="number"
-                  name="plate_year"
+                  name="vehicle_year"
                   required
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
@@ -146,7 +165,7 @@ const RegistrationForm = () => {
                   required
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
@@ -163,7 +182,7 @@ const RegistrationForm = () => {
                   required
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
@@ -182,7 +201,7 @@ const RegistrationForm = () => {
                   required
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
@@ -199,7 +218,7 @@ const RegistrationForm = () => {
                   required
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
@@ -218,7 +237,7 @@ const RegistrationForm = () => {
                   name="mileage"
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
@@ -240,7 +259,7 @@ const RegistrationForm = () => {
                   name="sticker_type"
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
@@ -266,7 +285,7 @@ const RegistrationForm = () => {
                   name="plate_issuer"
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
@@ -283,7 +302,7 @@ const RegistrationForm = () => {
                   name="plate_type"
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
@@ -309,14 +328,14 @@ const RegistrationForm = () => {
                   name="registration_fee"
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
                   className="input_design"
                 />
               </div>
-              <div>
+              {/* <div>
                 <label htmlFor="duration" className="block">
                   Duration
                 </label>
@@ -328,13 +347,13 @@ const RegistrationForm = () => {
                   name="duration"
                   onChange={(event) =>
                     setInputs((values) => ({
-                      ...values,
+                      ...values!,
                       [event.target.name]: event.target.value,
                     }))
                   }
                   className="input_design"
                 />
-              </div>
+              </div> */}
             </div>
           </div>
           <input
@@ -343,6 +362,7 @@ const RegistrationForm = () => {
           />
         </div>
       </form>
+      <div>{error && <ErrorPage fetchError={error} />}</div>
     </div>
   );
 };

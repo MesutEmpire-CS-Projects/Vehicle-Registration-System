@@ -8,8 +8,8 @@ const {
   getAllPlates,
   getOwner,
   deleteRegistration,
-  deleteManyEmployees,
-  updateEmployee,
+  deleteManyReg,
+  updateReg,
 } = require("../controllers/registrationController");
 const db = require("../middleware/databaseConnection");
 
@@ -23,7 +23,7 @@ router.get("/plates", getAllPlates);
 router.get("/owner/:name", getOwner);
 router.post("/createNewRegistration", createNewRegistration);
 router.delete("/registration_details/:registration_id", deleteRegistration);
-router.delete("/employee", deleteManyEmployees);
-router.patch("/employee/:employee_id", updateEmployee);
+router.delete("/registration_details", deleteManyReg);
+router.patch("/registration_details/:registration_details", updateReg);
 
 module.exports = router;
