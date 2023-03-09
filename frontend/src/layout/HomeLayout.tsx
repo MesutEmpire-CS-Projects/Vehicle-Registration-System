@@ -23,6 +23,9 @@ const HomeLayout = () => {
           <Link className="nav" to="/registrations">
             Registration Details
           </Link>
+          <Link className="nav" to="/notices">
+            Notices
+          </Link>
         </nav>
       </div>
       <div className=" col-span-3 h-full m-24">

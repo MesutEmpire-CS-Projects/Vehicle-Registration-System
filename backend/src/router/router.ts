@@ -10,6 +10,7 @@ const {
   deleteRegistration,
   deleteManyReg,
   updateReg,
+  getNoticeOwners
 } = require("../controllers/registrationController");
 const db = require("../middleware/databaseConnection");
 
@@ -21,6 +22,7 @@ router.get("/stickers", getAllStickers);
 router.get("/vehicles", getAllVehicles);
 router.get("/plates", getAllPlates);
 router.get("/owner/:name", getOwner);
+router.get("/notices", getNoticeOwners);
 router.post("/createNewRegistration", createNewRegistration);
 router.delete("/registration_details/:registration_id", deleteRegistration);
 router.delete("/registration_details", deleteManyReg);

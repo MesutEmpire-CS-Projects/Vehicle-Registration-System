@@ -14,7 +14,7 @@ const createNewRegistration = (req: Request, res: Response) => {
       last_name,
       phone_number,
       address,
-      vehicle_number,
+      plate_number,
       color,
       vehicle_year,
       model,
@@ -30,7 +30,7 @@ const createNewRegistration = (req: Request, res: Response) => {
   const owner_name = `${first_name} ${last_name}`;
   let details = {
     owner_id: null,
-    plate_number: null,
+    vehicle_number: null,
     sticker_number: null,
   };
 
@@ -44,17 +44,13 @@ const createNewRegistration = (req: Request, res: Response) => {
         })
         .then((result: any) => {
           details.owner_id = result[0].insertId;
-          for (const txt in result) {
-            console.log(`txt ---> ${txt} ====>>> ${result[txt]}`);
-          }
           //INSERT PLATE
           db.promise()
             .query({
-              sql: "INSERT INTO plate(plate_issuer, issue_year,type) VALUES (?, YEAR(SYSDATE()), ?)",
-              values: [plate_issuer, plate_type],
+              sql: "INSERT INTO plate(plate_number,plate_issuer, issue_year,type) VALUES (?,?, YEAR(SYSDATE()), ?)",
+              values: [plate_number,plate_issuer, plate_type],
             })
             .then((result: any) => {
-              details.plate_number = result[0].insertId;
               //INSERT STICKER
               db.promise()
                 .query({
@@ -66,21 +62,23 @@ const createNewRegistration = (req: Request, res: Response) => {
                   //INSERT VEHICLE
                   db.promise()
                     .query({
-                      sql: "INSERT INTO vehicle(vehicle_number, color, vehicle_year, model,make,weight,mileage,plate_number,sticker_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                      sql: "INSERT INTO vehicle(color, vehicle_year, model,make,weight,mileage,plate_number,sticker_number,owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                       values: [
-                        vehicle_number,
                         color,
                         vehicle_year,
                         model,
                         make,
                         weight,
                         mileage,
-                        details.plate_number,
+                        plate_number,
                         details.sticker_number,
+                        details.owner_id
                       ],
                     })
                     .then((result: any) => {
+                      details.vehicle_number = result[0].insertId;
                       const duration = registration_fee / 5000;
+
                       //INSERT REG
                       db.promise()
                         .query({
@@ -88,7 +86,7 @@ const createNewRegistration = (req: Request, res: Response) => {
                           values: [
                             registration_fee,
                             duration,
-                            vehicle_number,
+                            details.vehicle_number,
                             details.owner_id,
                           ],
                         })
@@ -290,6 +288,19 @@ const getAllPlates = (req: Request, res: Response) => {
     }
   );
 };
+const getNoticeOwners = (req: Request, res: Response) => {
+  const currentDate = new Date();
+  const endDate = new Date(currentDate.setMonth(currentDate.getMonth() + 2));
+  
+  pool.query({
+    sql: "SELECT registration_detail.owner_id, registration_detail.end_date, owner.owner_name, owner.phone_number FROM registration_detail JOIN owner ON registration_detail.owner_id = owner.owner_id WHERE registration_detail.end_date < ?;",
+    values:[endDate]
+  }, (error:QueryError, results:RowDataPacket) => {
+    if (error) res.status(500).json(error);
+    res.json(results);
+  });
+};
+
 
 //Delete Many Registrations
 const deleteManyReg = (req: Request, res: Response) => {};
@@ -308,4 +319,5 @@ module.exports = {
   deleteRegistration,
   deleteManyReg,
   updateReg,
+  getNoticeOwners
 };

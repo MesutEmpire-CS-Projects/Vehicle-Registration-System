@@ -120,12 +120,12 @@ const RegistrationForm = () => {
             <h3>Vehicle</h3>
             <div className="flex justify-evenly gap-x-8 ">
               <div>
-                <label htmlFor="vehicle_number" className="block">
-                  Vehicle Number
+                <label htmlFor="vehicle_year" className="block">
+                  Year
                 </label>
                 <input
-                  type="text"
-                  name="vehicle_number"
+                  type="number"
+                  name="vehicle_year"
                   required
                   onChange={(event) =>
                     setInputs((values) => ({
@@ -137,13 +137,13 @@ const RegistrationForm = () => {
                 />
               </div>
               <div>
-                <label htmlFor="vehicle_year" className="block">
-                  Year
+                <label htmlFor="mileage" className="block">
+                  Mileage
                 </label>
                 <input
                   type="number"
-                  name="vehicle_year"
                   required
+                  name="mileage"
                   onChange={(event) =>
                     setInputs((values) => ({
                       ...values!,
@@ -226,25 +226,6 @@ const RegistrationForm = () => {
                 />
               </div>
             </div>
-            <div className="flex justify-start gap-x-8 ">
-              <div>
-                <label htmlFor="mileage" className="block">
-                  Mileage
-                </label>
-                <input
-                  type="number"
-                  required
-                  name="mileage"
-                  onChange={(event) =>
-                    setInputs((values) => ({
-                      ...values!,
-                      [event.target.name]: event.target.value,
-                    }))
-                  }
-                  className="input_design"
-                />
-              </div>
-            </div>
           </div>
           <div>
             <h3>Sticker</h3>
@@ -275,6 +256,23 @@ const RegistrationForm = () => {
           <div>
             <h3>Plate</h3>
             <div className="flex justify-evenly gap-x-8 ">
+              <div>
+                <label htmlFor="plate_number" className="block">
+                  Plate Number
+                </label>
+                <input
+                  type="text"
+                  name="plate_number"
+                  required
+                  onChange={(event) =>
+                    setInputs((values) => ({
+                      ...values!,
+                      [event.target.name]: event.target.value,
+                    }))
+                  }
+                  className="input_design"
+                />
+              </div>
               <div>
                 <label htmlFor="plate_issuer" className="block">
                   Issuer

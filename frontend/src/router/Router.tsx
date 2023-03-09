@@ -7,6 +7,7 @@ import Vehicle from "../components/Vehicle";
 import Sticker from "../components/Sticker";
 import Plate from "../components/Plate";
 import Owner from "../components/Owner";
+import Notice from "../components/Notice";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: "/owners",
         element: <Owner />,
+      },
+      {
+        path: "/notices",
+        element: <Notice />,
       },
     ],
   },

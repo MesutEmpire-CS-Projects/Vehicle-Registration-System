@@ -11,21 +11,22 @@ export interface ISticker {
   type: string;
 }
 export interface IPlate {
-  plate_number: number;
+  plate_number: string;
   plate_issuer: string;
   issue_year: number;
   type: string;
 }
 export interface IVehicle {
-  vehicle_number: string;
+  vehicle_number: number;
   color: string;
   vehicle_year: number;
   model: string;
   make: string;
   weight: number;
   mileage: number;
-  plate_number: number;
+  plate_number: string;
   sticker_number: number;
+  owner_id:number
 }
 
 export interface IRegistration_detail {
@@ -43,7 +44,7 @@ export type IRegistration_Form = {
   last_name: string;
   phone_number: number;
   address: string;
-  vehicle_number: string;
+  vehicle_number: number;
   color: string;
   vehicle_year: number;
   model: string;
