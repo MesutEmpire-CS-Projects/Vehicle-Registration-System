@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import { QueryError, RowDataPacket } from "mysql2";
 import ErrnoException = NodeJS.ErrnoException;
 import { PoolConnection, PromisePoolConnection } from "mysql2/promise";
-
+const {redisClient} = require('../middleware/cacheConnection')
 const pool = require("../middleware/databaseConnection");
+
 
 //Perform CRUD
 //Add new Registration
@@ -129,22 +130,6 @@ const createNewRegistration = (req: Request, res: Response) => {
   });
 };
 
-const getOwner = (req: Request, res: Response) => {
-  const name = req.params.name;
-  pool.query(
-    {
-      sql: "SELECT * FROM owner WHERE owner_name LIKE ?",
-      values: [`%${name}%`, `%${name}%`],
-    },
-    (error: QueryError, results: RowDataPacket) => {
-      if (error) {
-        res.status(400).json(error);
-        throw error;
-      }
-      res.json(results);
-    }
-  );
-};
 //Delete an Registration
 const deleteRegistration = (req: Request, res: Response) => {
   const {
@@ -244,10 +229,32 @@ const deleteRegistration = (req: Request, res: Response) => {
 
 //GET all Employees
 const getAllOwners = (req: Request, res: Response) => {
+  // console.log(req.path)
+  console.log('Sec 2')
   pool.query(
     "SELECT * FROM owner",
     (error: QueryError, results: RowDataPacket) => {
       if (error) res.status(500).json(error);
+      redisClient.set('owners',JSON.stringify(results),{
+        EX: process.env.EXPIRY_TIME
+      });
+      console.log('data from mysql : ')
+      res.json(results);
+    }
+  );
+};
+const getOwner = (req: Request, res: Response) => {
+  const name = req.params.name;
+  pool.query(
+    {
+      sql: "SELECT * FROM owner WHERE owner_name LIKE ?",
+      values: [`%${name}%`, `%${name}%`],
+    },
+    (error: QueryError, results: RowDataPacket) => {
+      if (error) {
+        res.status(400).json(error);
+        throw error;
+      }
       res.json(results);
     }
   );
@@ -257,6 +264,10 @@ const getAllRegistrationDetails = (req: Request, res: Response) => {
     "SELECT * FROM registration_detail",
     (error: QueryError, results: RowDataPacket) => {
       if (error) res.status(500).json(error);
+      redisClient.set('registration_details',JSON.stringify(results),{
+        EX: process.env.EXPIRY_TIME
+      });
+      console.log('data from mysql : ')
       res.json(results);
     }
   );
@@ -266,6 +277,10 @@ const getAllStickers = (req: Request, res: Response) => {
     "SELECT * FROM sticker",
     (error: QueryError, results: RowDataPacket) => {
       if (error) res.status(500).json(error);
+      redisClient.set('stickers',JSON.stringify(results),{
+        EX: process.env.EXPIRY_TIME
+      });
+      console.log('data from mysql : ')
       res.json(results);
     }
   );
@@ -275,6 +290,10 @@ const getAllVehicles = (req: Request, res: Response) => {
     "SELECT * FROM vehicle",
     (error: QueryError, results: RowDataPacket) => {
       if (error) res.status(500).json(error);
+      redisClient.set('vehicles',JSON.stringify(results),{
+        EX: process.env.EXPIRY_TIME
+      });
+      console.log('data from mysql : ')
       res.json(results);
     }
   );
@@ -284,6 +303,10 @@ const getAllPlates = (req: Request, res: Response) => {
     "SELECT * FROM plate",
     (error: QueryError, results: RowDataPacket) => {
       if (error) res.status(500).json(error);
+      redisClient.set('plates',JSON.stringify(results),{
+        EX: process.env.EXPIRY_TIME
+      });
+      console.log('data from mysql : ')
       res.json(results);
     }
   );
@@ -297,6 +320,10 @@ const getNoticeOwners = (req: Request, res: Response) => {
     values:[endDate]
   }, (error:QueryError, results:RowDataPacket) => {
     if (error) res.status(500).json(error);
+    redisClient.set('notices',JSON.stringify(results),{
+      EX: process.env.EXPIRY_TIME
+    });
+    console.log('data from mysql : ')
     res.json(results);
   });
 };

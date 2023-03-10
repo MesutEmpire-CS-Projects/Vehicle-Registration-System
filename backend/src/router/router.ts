@@ -13,16 +13,16 @@ const {
   getNoticeOwners
 } = require("../controllers/registrationController");
 const db = require("../middleware/databaseConnection");
-
+const {dataCache} = require('../middleware/cacheConnection')
 const router = Router();
 
-router.get("/owners", getAllOwners);
-router.get("/registration_details", getAllRegistrationDetails);
-router.get("/stickers", getAllStickers);
-router.get("/vehicles", getAllVehicles);
-router.get("/plates", getAllPlates);
+router.get("/owners",dataCache, getAllOwners);
+router.get("/registration_details",dataCache, getAllRegistrationDetails);
+router.get("/stickers",dataCache, getAllStickers);
+router.get("/vehicles",dataCache, getAllVehicles);
+router.get("/plates",dataCache, getAllPlates);
 router.get("/owner/:name", getOwner);
-router.get("/notices", getNoticeOwners);
+router.get("/notices",dataCache, getNoticeOwners);
 router.post("/createNewRegistration", createNewRegistration);
 router.delete("/registration_details/:registration_id", deleteRegistration);
 router.delete("/registration_details", deleteManyReg);
