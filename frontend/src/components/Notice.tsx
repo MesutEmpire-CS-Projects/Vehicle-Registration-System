@@ -6,7 +6,7 @@ const Notice = () => {
   const [error, setError] = useState();
 
   const getNoticeData = () => {
-    fetch("http://localhost:2000/api/notices")
+    fetch("http://localhost:2000/api/notice/notice")
       .then((res: Response) => res.json())
       .then((data: any) => {
         setNotices(data);
@@ -62,7 +62,10 @@ const Notice = () => {
                         </th>
                         <td className="px-6 py-4">{notice.owner_name}</td>
                         <td className="px-6 py-4">{notice.phone_number}</td>
-                        <td className="px-6 py-4">  {new Date(notice.end_date).toLocaleDateString()}</td>
+                        <td className="px-6 py-4">
+                          {" "}
+                          {new Date(notice.end_date).toLocaleDateString()}
+                        </td>
                       </tr>
                     );
                   })}

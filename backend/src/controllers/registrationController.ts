@@ -2,9 +2,8 @@ import { Request, Response } from "express";
 import { QueryError, RowDataPacket } from "mysql2";
 import ErrnoException = NodeJS.ErrnoException;
 import { PoolConnection, PromisePoolConnection } from "mysql2/promise";
-const {redisClient} = require('../middleware/cacheConnection')
+const { redisClient } = require("../middleware/cacheConnection");
 const pool = require("../middleware/databaseConnection");
-
 
 //Perform CRUD
 //Add new Registration
@@ -49,7 +48,7 @@ const createNewRegistration = (req: Request, res: Response) => {
           db.promise()
             .query({
               sql: "INSERT INTO plate(plate_number,plate_issuer, issue_year,type) VALUES (?,?, YEAR(SYSDATE()), ?)",
-              values: [plate_number,plate_issuer, plate_type],
+              values: [plate_number, plate_issuer, plate_type],
             })
             .then((result: any) => {
               //INSERT STICKER
@@ -73,7 +72,7 @@ const createNewRegistration = (req: Request, res: Response) => {
                         mileage,
                         plate_number,
                         details.sticker_number,
-                        details.owner_id
+                        details.owner_id,
                       ],
                     })
                     .then((result: any) => {
@@ -228,21 +227,20 @@ const deleteRegistration = (req: Request, res: Response) => {
 };
 
 //GET all Employees
-const getAllOwners = (req: Request, res: Response) => {
-  // console.log(req.path)
-  console.log('Sec 2')
+const getAllData = (req: Request, res: Response) => {
+  const table = req.params.type;
   pool.query(
-    "SELECT * FROM owner",
+    `SELECT * FROM ${table}`,
     (error: QueryError, results: RowDataPacket) => {
       if (error) res.status(500).json(error);
-      redisClient.set('owners',JSON.stringify(results),{
-        EX: process.env.EXPIRY_TIME
+      redisClient.set(table, JSON.stringify(results), {
+        EX: process.env.EXPIRY_TIME,
       });
-      console.log('data from mysql : ')
       res.json(results);
     }
   );
 };
+
 const getOwner = (req: Request, res: Response) => {
   const name = req.params.name;
   pool.query(
@@ -259,75 +257,25 @@ const getOwner = (req: Request, res: Response) => {
     }
   );
 };
-const getAllRegistrationDetails = (req: Request, res: Response) => {
-  pool.query(
-    "SELECT * FROM registration_detail",
-    (error: QueryError, results: RowDataPacket) => {
-      if (error) res.status(500).json(error);
-      redisClient.set('registration_details',JSON.stringify(results),{
-        EX: process.env.EXPIRY_TIME
-      });
-      console.log('data from mysql : ')
-      res.json(results);
-    }
-  );
-};
-const getAllStickers = (req: Request, res: Response) => {
-  pool.query(
-    "SELECT * FROM sticker",
-    (error: QueryError, results: RowDataPacket) => {
-      if (error) res.status(500).json(error);
-      redisClient.set('stickers',JSON.stringify(results),{
-        EX: process.env.EXPIRY_TIME
-      });
-      console.log('data from mysql : ')
-      res.json(results);
-    }
-  );
-};
-const getAllVehicles = (req: Request, res: Response) => {
-  pool.query(
-    "SELECT * FROM vehicle",
-    (error: QueryError, results: RowDataPacket) => {
-      if (error) res.status(500).json(error);
-      redisClient.set('vehicles',JSON.stringify(results),{
-        EX: process.env.EXPIRY_TIME
-      });
-      console.log('data from mysql : ')
-      res.json(results);
-    }
-  );
-};
-const getAllPlates = (req: Request, res: Response) => {
-  pool.query(
-    "SELECT * FROM plate",
-    (error: QueryError, results: RowDataPacket) => {
-      if (error) res.status(500).json(error);
-      redisClient.set('plates',JSON.stringify(results),{
-        EX: process.env.EXPIRY_TIME
-      });
-      console.log('data from mysql : ')
-      res.json(results);
-    }
-  );
-};
+
 const getNoticeOwners = (req: Request, res: Response) => {
   const currentDate = new Date();
   const endDate = new Date(currentDate.setMonth(currentDate.getMonth() + 2));
-  
-  pool.query({
-    sql: "SELECT registration_detail.owner_id, registration_detail.end_date, owner.owner_name, owner.phone_number FROM registration_detail JOIN owner ON registration_detail.owner_id = owner.owner_id WHERE registration_detail.end_date < ?;",
-    values:[endDate]
-  }, (error:QueryError, results:RowDataPacket) => {
-    if (error) res.status(500).json(error);
-    redisClient.set('notices',JSON.stringify(results),{
-      EX: process.env.EXPIRY_TIME
-    });
-    console.log('data from mysql : ')
-    res.json(results);
-  });
-};
 
+  pool.query(
+    {
+      sql: "SELECT registration_detail.owner_id, registration_detail.end_date, owner.owner_name, owner.phone_number FROM registration_detail JOIN owner ON registration_detail.owner_id = owner.owner_id WHERE registration_detail.end_date < ?;",
+      values: [endDate],
+    },
+    (error: QueryError, results: RowDataPacket) => {
+      if (error) res.status(500).json(error);
+      redisClient.set("notice", JSON.stringify(results), {
+        EX: process.env.EXPIRY_TIME,
+      });
+      res.json(results);
+    }
+  );
+};
 
 //Delete Many Registrations
 const deleteManyReg = (req: Request, res: Response) => {};
@@ -337,14 +285,10 @@ const updateReg = (req: Request, res: Response) => {};
 
 module.exports = {
   createNewRegistration,
-  getAllOwners,
-  getAllRegistrationDetails,
-  getAllStickers,
-  getAllVehicles,
-  getAllPlates,
   getOwner,
   deleteRegistration,
   deleteManyReg,
   updateReg,
-  getNoticeOwners
+  getNoticeOwners,
+  getAllData,
 };

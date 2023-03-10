@@ -7,7 +7,7 @@ const Owner = () => {
   const [error, setError] = useState();
 
   const getOwnerData = () => {
-    fetch("http://localhost:2000/api/owners")
+    fetch("http://localhost:2000/api/owner")
       .then((res: Response) => res.json())
       .then((data: any) => {
         setOwners(data);

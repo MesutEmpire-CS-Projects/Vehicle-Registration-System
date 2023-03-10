@@ -7,7 +7,7 @@ const RegistrationDetails = () => {
   const [error, setError] = useState();
 
   const getRegistrationData = () => {
-    fetch("http://localhost:2000/api/registration_details")
+    fetch("http://localhost:2000/api/registration_detail")
       .then((res: Response) => res.json())
       .then((data: any) => {
         setRegistration(data);

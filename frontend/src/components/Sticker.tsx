@@ -7,7 +7,7 @@ const Sticker = () => {
   const [error, setError] = useState();
 
   const getOwnerData = () => {
-    fetch("http://localhost:2000/api/stickers")
+    fetch("http://localhost:2000/api/sticker")
       .then((res: Response) => res.json())
       .then((data: any) => {
         setStickers(data);

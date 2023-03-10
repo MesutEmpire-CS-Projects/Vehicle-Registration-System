@@ -7,7 +7,7 @@ const Vehicle = () => {
   const [error, setError] = useState();
 
   const getOwnerData = () => {
-    fetch("http://localhost:2000/api/vehicles")
+    fetch("http://localhost:2000/api/vehicle")
       .then((res: Response) => res.json())
       .then((data: any) => {
         setVehicles(data);

@@ -7,7 +7,7 @@ const Plate = () => {
   const [error, setError] = useState();
 
   const getPlatesData = () => {
-    fetch("http://localhost:2000/api/plates")
+    fetch("http://localhost:2000/api/plate")
       .then((res: Response) => res.json())
       .then((data: any) => {
         setPlates(data);
