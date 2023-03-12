@@ -8,7 +8,7 @@ const pool = require("../middleware/databaseConnection");
 //Perform CRUD
 //Add new Registration
 const createNewRegistration = (req: Request, res: Response) => {
-  const [
+  const
     {
       first_name,
       last_name,
@@ -25,8 +25,8 @@ const createNewRegistration = (req: Request, res: Response) => {
       sticker_type,
       plate_issuer,
       plate_type,
-    },
-  ] = req.body;
+    }
+   = req.body;
   const owner_name = `${first_name} ${last_name}`;
   let details = {
     owner_id: null,

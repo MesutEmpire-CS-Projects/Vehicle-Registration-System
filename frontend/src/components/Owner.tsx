@@ -1,25 +1,29 @@
 import { useState } from "react";
 import { IOwner } from "../intetfaces/Interfaces";
 import ErrorPage from "./Error";
+import {useSelector,useDispatch} from 'react-redux'
+import {selectOwners,fetchAllOwners} from '../store/ownerSlice'
 
 const Owner = () => {
-  const [owners, setOwners] = useState<IOwner[]>([]);
-  const [error, setError] = useState();
-
-  const getOwnerData = () => {
-    fetch("http://localhost:2000/api/owner")
-      .then((res: Response) => res.json())
-      .then((data: any) => {
-        setOwners(data);
-      })
-      .catch((error: any) => setError(error.message));
-  };
+    const {owners,error} = useSelector(selectOwners)
+    const dispatch = useDispatch()
+  // const [owners, setOwners] = useState<IOwner[]>([]);
+  // const [error, setError] = useState();
+  //
+  // const getOwnerData = () => {
+  //   fetch("http://localhost:2000/api/owner")
+  //     .then((res: Response) => res.json())
+  //     .then((data: any) => {
+  //       setOwners(data);
+  //     })
+  //     .catch((error: any) => setError(error.message));
+  // };
   return (
     <div>
       <h2>Owners Details</h2>
       <div className="flex">
         <button
-          onClick={() => getOwnerData()}
+          onClick={() => dispatch(fetchAllOwners())}
           className="w-1/2 my-8 input_design bg-blue-700 hover:bg-blue-500 text-white"
         >
           Get Owners Data

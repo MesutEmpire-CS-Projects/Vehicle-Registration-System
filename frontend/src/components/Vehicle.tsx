@@ -1,25 +1,18 @@
 import { useState } from "react";
 import { IVehicle } from "../intetfaces/Interfaces";
 import ErrorPage from "./Error";
+import {useSelector,useDispatch} from 'react-redux'
+import {selectVehicles,fetchAllVehicles} from '../store/vehicleSlice'
 
 const Vehicle = () => {
-  const [vehicles, setVehicles] = useState<IVehicle[]>([]);
-  const [error, setError] = useState();
-
-  const getOwnerData = () => {
-    fetch("http://localhost:2000/api/vehicle")
-      .then((res: Response) => res.json())
-      .then((data: any) => {
-        setVehicles(data);
-      })
-      .catch((error: any) => setError(error.message));
-  };
+    const {vehicles,error} = useSelector(selectVehicles)
+    const dispatch = useDispatch()
   return (
     <div>
       <h2>Vehicle Details</h2>
       <div className="flex ">
         <button
-          onClick={() => getOwnerData()}
+          onClick={() => dispatch(fetchAllVehicles())}
           className="w-1/2 my-8 input_design bg-blue-700 hover:bg-blue-500 text-white"
         >
           Get Vehicles Data
@@ -95,6 +88,7 @@ const Vehicle = () => {
         </div>
       )}
     </div>
+
   );
 };
 

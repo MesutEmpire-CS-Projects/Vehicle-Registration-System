@@ -1,25 +1,19 @@
 import { useState } from "react";
 import { IPlate } from "../intetfaces/Interfaces";
 import ErrorPage from "./Error";
+import {useSelector,useDispatch} from 'react-redux'
+import {selectPlates,fetchAllPlates} from '../store/plateSlice'
 
 const Plate = () => {
-  const [plates, setPlates] = useState<IPlate[]>([]);
-  const [error, setError] = useState();
+    const {plates,error} = useSelector(selectPlates)
+    const dispatch = useDispatch()
 
-  const getPlatesData = () => {
-    fetch("http://localhost:2000/api/plate")
-      .then((res: Response) => res.json())
-      .then((data: any) => {
-        setPlates(data);
-      })
-      .catch((error: any) => setError(error.message));
-  };
   return (
     <div>
       <h2>Plates Details</h2>
       <div className="flex ">
         <button
-          onClick={() => getPlatesData()}
+          onClick={() => dispatch(fetchAllPlates())}
           className="w-1/2 my-8 input_design bg-blue-700 hover:bg-blue-500 text-white"
         >
           Get Plates Data

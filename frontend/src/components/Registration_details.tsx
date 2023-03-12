@@ -1,25 +1,21 @@
 import { useEffect, useState } from "react";
 import { IRegistration_detail } from "../intetfaces/Interfaces";
 import ErrorPage from "./Error";
+import {useSelector,useDispatch} from 'react-redux'
+import {fetchAllRegistration_details,selectRegistrationDetails} from '../store/registrationSlice'
 
 const RegistrationDetails = () => {
-  const [registration, setRegistration] = useState<IRegistration_detail[]>([]);
-  const [error, setError] = useState();
 
-  const getRegistrationData = () => {
-    fetch("http://localhost:2000/api/registration_detail")
-      .then((res: Response) => res.json())
-      .then((data: any) => {
-        setRegistration(data);
-      })
-      .catch((error: any) => setError(error.message));
-  };
+    const registration = useSelector(selectRegistrationDetails).data
+    const error = useSelector(selectRegistrationDetails).error
+    const dispatch = useDispatch()
+
   return (
     <div>
       <h2>Registration Details</h2>
       <div className="flex ">
         <button
-          onClick={() => getRegistrationData()}
+          onClick={() => dispatch(fetchAllRegistration_details())}
           className="w-1/2 my-8 input_design bg-blue-700 hover:bg-blue-500 text-white"
         >
           Get Registration Data

@@ -1,24 +1,28 @@
 import { useState } from "react";
 import ErrorPage from "./Error";
+import {useSelector,useDispatch} from 'react-redux'
+import {selectNotices,fetchAllNotices} from '../store/noticeSlice'
 
 const Notice = () => {
-  const [notices, setNotices] = useState<any[]>([]);
-  const [error, setError] = useState();
-
-  const getNoticeData = () => {
-    fetch("http://localhost:2000/api/notice/notice")
-      .then((res: Response) => res.json())
-      .then((data: any) => {
-        setNotices(data);
-      })
-      .catch((error: any) => setError(error.message));
-  };
+    const {notices,error} = useSelector(selectNotices)
+    const dispatch = useDispatch()
+  // const [notices, setNotices] = useState<any[]>([]);
+  // const [error, setError] = useState();
+  //
+  // const getNoticeData = () => {
+  //   fetch("http://localhost:2000/api/notice/notice")
+  //     .then((res: Response) => res.json())
+  //     .then((data: any) => {
+  //       setNotices(data);
+  //     })
+  //     .catch((error: any) => setError(error.message));
+  // };
   return (
     <div>
       <h2>Notices Details</h2>
       <div className="flex">
         <button
-          onClick={() => getNoticeData()}
+          onClick={() => dispatch(fetchAllNotices())}
           className="w-1/2 my-8 input_design bg-blue-700 hover:bg-blue-500 text-white"
         >
           Get Notices Data

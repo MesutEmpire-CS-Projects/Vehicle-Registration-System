@@ -1,25 +1,30 @@
 import { useState } from "react";
 import { ISticker } from "../intetfaces/Interfaces";
 import ErrorPage from "./Error";
+import {useSelector,useDispatch} from 'react-redux'
+import {selectStickers,fetchAllStickers} from '../store/stickerSlice'
+
 
 const Sticker = () => {
-  const [stickers, setStickers] = useState<ISticker[]>([]);
-  const [error, setError] = useState();
-
-  const getOwnerData = () => {
-    fetch("http://localhost:2000/api/sticker")
-      .then((res: Response) => res.json())
-      .then((data: any) => {
-        setStickers(data);
-      })
-      .catch((error: any) => setError(error.message));
-  };
+    const {stickers,error} = useSelector(selectStickers)
+    const dispatch = useDispatch()
+  // const [stickers, setStickers] = useState<ISticker[]>([]);
+  // const [error, setError] = useState();
+  //
+  // const getOwnerData = () => {
+  //   fetch("http://localhost:2000/api/sticker")
+  //     .then((res: Response) => res.json())
+  //     .then((data: any) => {
+  //       setStickers(data);
+  //     })
+  //     .catch((error: any) => setError(error.message));
+  // };
   return (
     <div>
       <h2>Sticker Details</h2>
       <div className="flex ">
         <button
-          onClick={() => getOwnerData()}
+          onClick={() => dispatch(fetchAllStickers())}
           className="w-1/2 my-8 input_design bg-blue-700 hover:bg-blue-500 text-white"
         >
           Get Stickers Data
