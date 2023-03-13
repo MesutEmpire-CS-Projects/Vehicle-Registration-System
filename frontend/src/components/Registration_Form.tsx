@@ -2,22 +2,19 @@ import { FormEvent, useEffect, useState } from "react";
 import { IRegistration_Form } from "../intetfaces/Interfaces";
 import { redirect } from "react-router-dom";
 import ErrorPage from "./Error";
-import {useSelector,useDispatch} from 'react-redux';
-import {createNewRegistration,setForm,selectRegistration,selectErrorPost} from '../store/registrationSlice'
+import { useSelector, useDispatch } from "react-redux";
+import {
+  createNewRegistration,
+  setForm,
+  selectRegistration,
+  selectErrorPost,
+} from "../store/registrationSlice";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 
 const RegistrationForm = () => {
-  const [inputs, setInputs] = useState<IRegistration_Form>();
-  // const [error, setError] = useState();
-
-
-
-    const error = useSelector(selectErrorPost)
-  const form = useSelector(selectRegistration)
-    const dispatch = useDispatch()
-
-  // useEffect(() => {
-  //   console.log(error)
-  // },[error])
+  const error = useSelector(selectErrorPost);
+  const form = useSelector(selectRegistration);
+  const dispatch: ThunkDispatch<any, any, AnyAction> = useDispatch();
 
   const submitData = (event: FormEvent) => {
     event.preventDefault();
@@ -27,7 +24,12 @@ const RegistrationForm = () => {
   return (
     <div className="max-w-xl">
       <h3 className="text-3xl font-medium m-1">Registration Form</h3>
-      <form onSubmit={(event: FormEvent) => submitData(event) } onChange={(event:FormEvent) => dispatch(setForm({[event.target.name]: event.target.value}))}>
+      <form
+        onSubmit={(event: FormEvent) => submitData(event)}
+        onChange={(event: FormEvent) =>
+          dispatch(setForm({ [event.target.name]: event.target.value }))
+        }
+      >
         <div className="flex flex-col gap-y-8 rounded-lg border border-gray-300 p-5">
           <div>
             <h3>Owner</h3>
@@ -240,7 +242,6 @@ const RegistrationForm = () => {
         </div>
       </form>
       <div>{error && <ErrorPage fetchError={error} />}</div>
-      {error}
     </div>
   );
 };

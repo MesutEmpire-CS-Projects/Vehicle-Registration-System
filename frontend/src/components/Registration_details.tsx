@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { IRegistration_detail } from "../intetfaces/Interfaces";
 import ErrorPage from "./Error";
-import {useSelector,useDispatch} from 'react-redux'
-import {fetchAllRegistration_details,selectRegistrationDetails} from '../store/registrationSlice'
+import { useSelector, useDispatch } from "react-redux";
+import {
+  fetchAllRegistration_details,
+  selectRegistrationDetails,
+} from "../store/registrationSlice";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 
 const RegistrationDetails = () => {
-
-    const registration = useSelector(selectRegistrationDetails).data
-    const error = useSelector(selectRegistrationDetails).error
-    const dispatch = useDispatch()
+  const { registration, error } = useSelector(selectRegistrationDetails);
+  const dispatch: ThunkDispatch<any, any, AnyAction> = useDispatch();
 
   return (
     <div>

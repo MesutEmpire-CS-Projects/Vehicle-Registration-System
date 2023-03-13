@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { IVehicle } from "../intetfaces/Interfaces";
 import ErrorPage from "./Error";
-import {useSelector,useDispatch} from 'react-redux'
-import {selectVehicles,fetchAllVehicles} from '../store/vehicleSlice'
+import { useSelector, useDispatch } from "react-redux";
+import { selectVehicles, fetchAllVehicles } from "../store/vehicleSlice";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 
 const Vehicle = () => {
-    const {vehicles,error} = useSelector(selectVehicles)
-    const dispatch = useDispatch()
+  const { vehicles, error } = useSelector(selectVehicles);
+  const dispatch: ThunkDispatch<any, any, AnyAction> = useDispatch();
+
   return (
     <div>
       <h2>Vehicle Details</h2>
@@ -88,7 +90,6 @@ const Vehicle = () => {
         </div>
       )}
     </div>
-
   );
 };
 

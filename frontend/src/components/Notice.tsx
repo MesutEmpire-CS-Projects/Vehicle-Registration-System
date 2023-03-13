@@ -1,22 +1,13 @@
 import { useState } from "react";
 import ErrorPage from "./Error";
-import {useSelector,useDispatch} from 'react-redux'
-import {selectNotices,fetchAllNotices} from '../store/noticeSlice'
+import { useSelector, useDispatch } from "react-redux";
+import { selectNotices, fetchAllNotices } from "../store/noticeSlice";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 
 const Notice = () => {
-    const {notices,error} = useSelector(selectNotices)
-    const dispatch = useDispatch()
-  // const [notices, setNotices] = useState<any[]>([]);
-  // const [error, setError] = useState();
-  //
-  // const getNoticeData = () => {
-  //   fetch("http://localhost:2000/api/notice/notice")
-  //     .then((res: Response) => res.json())
-  //     .then((data: any) => {
-  //       setNotices(data);
-  //     })
-  //     .catch((error: any) => setError(error.message));
-  // };
+  const { notices, error } = useSelector(selectNotices);
+  const dispatch: ThunkDispatch<any, any, AnyAction> = useDispatch();
+
   return (
     <div>
       <h2>Notices Details</h2>

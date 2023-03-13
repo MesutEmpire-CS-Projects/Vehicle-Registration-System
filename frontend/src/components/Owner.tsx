@@ -1,23 +1,14 @@
 import { useState } from "react";
 import { IOwner } from "../intetfaces/Interfaces";
 import ErrorPage from "./Error";
-import {useSelector,useDispatch} from 'react-redux'
-import {selectOwners,fetchAllOwners} from '../store/ownerSlice'
+import { useSelector, useDispatch } from "react-redux";
+import { selectOwners, fetchAllOwners } from "../store/ownerSlice";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 
 const Owner = () => {
-    const {owners,error} = useSelector(selectOwners)
-    const dispatch = useDispatch()
-  // const [owners, setOwners] = useState<IOwner[]>([]);
-  // const [error, setError] = useState();
-  //
-  // const getOwnerData = () => {
-  //   fetch("http://localhost:2000/api/owner")
-  //     .then((res: Response) => res.json())
-  //     .then((data: any) => {
-  //       setOwners(data);
-  //     })
-  //     .catch((error: any) => setError(error.message));
-  // };
+  const { owners, error } = useSelector(selectOwners);
+  const dispatch: ThunkDispatch<any, any, AnyAction> = useDispatch();
+
   return (
     <div>
       <h2>Owners Details</h2>

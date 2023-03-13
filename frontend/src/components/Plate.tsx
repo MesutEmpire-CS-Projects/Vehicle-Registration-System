@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { IPlate } from "../intetfaces/Interfaces";
 import ErrorPage from "./Error";
-import {useSelector,useDispatch} from 'react-redux'
-import {selectPlates,fetchAllPlates} from '../store/plateSlice'
+import { useSelector, useDispatch } from "react-redux";
+import { selectPlates, fetchAllPlates } from "../store/plateSlice";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 
 const Plate = () => {
-    const {plates,error} = useSelector(selectPlates)
-    const dispatch = useDispatch()
+  const { plates, error } = useSelector(selectPlates);
+  const dispatch: ThunkDispatch<any, any, AnyAction> = useDispatch();
 
   return (
     <div>
